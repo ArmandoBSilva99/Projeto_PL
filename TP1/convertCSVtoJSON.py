@@ -4,15 +4,30 @@ from turtle import position
 
 #ER = r'"a[0-9]+","[A-Za-z éáçãíÉÁÇÃÍóô\-âï]+","[A-Z]+"[,\d]+\n'
 
-def head_reader(header, categories):
+def head_reader(header, aggregatedOperations, aggregatedcategories, normalCategories):
     #aggregation e.g. Notas{4,5}
-    aggregatedcategories = re.findall(r'(\w+{[\d,]+}(::\w+)*|\w+{[\d,]+})', header)
+    a = (re.findall(r'\w+[{\d+,}:]*', header))
+    i = 0
+    for header in a:
+        if (header[-1] == ','):
+            print(header)
+            i+=1
+        elif(header[-1] == ':'):
+            i=i+2
+    
+    """
+    aggregatedOperations = re.findall(r'(\w+{[\d,]+})::(\w+)', header)
+    print("aggregatedOperations categories: ")
+    print(aggregatedOperations)
+    aggregatedcategories = re.findall(r'\w+{[\d,]+}[^:]', header)
     print("aggregated categories: ")
     print(aggregatedcategories)
-    aggregation = re.sub(r'\w+{[\d,]+}(::\w+)*', r'',header)
+    normalCategories = re.sub(r'\w+{[\d,]+}(::\w+)*', r'',header)
     print("normal categories: ")
-    print(aggregation)
+    print(normalCategories)
     """
+    """
+
     if(aggregation):
         for cat in aggregation:
             categories.append( (re.findall(r'^\w+', cat)[0], re.findall(r'\d+', cat)) )
@@ -45,8 +60,8 @@ def converter(lines, headers):
 f = open("teste.csv")
 lines = f.read().splitlines()
 f.close()
-categories = []
-header = head_reader(lines[0], categories) #HEADER
+aggregatedOperations = aggregatedcategories = normalCategories = []
+header = head_reader(lines[0], aggregatedOperations, aggregatedcategories, normalCategories) #HEADER
 #result = converter(lines[1:], header)
 #f = open("result.json","w+")
 #f.write(result)
