@@ -1,19 +1,12 @@
-from ast import operator
-from curses.ascii import isdigit
 import re
 import sys
-from turtle import position
-from typing import Tuple
 
 #ER = r'"a[0-9]+","[A-Za-z éáçãíÉÁÇÃÍóô\-âï]+","[A-Z]+"[,\d]+\n'
 #ER = r'(\w+{\d,*\d*}:*:*\w*)|([a-zA-Zú]+)'
 
 def head_reader(header):
-    #aggregation e.g. Notas{4,5}
-
-    things = re.findall(r'(\w+{\d,*\d*}:*:*\w*)|([a-zA-Zú]+)',header) #adicionar mais acentos?
-    print(things)
-    return things
+    res = re.findall(r'([^,\n]+{\d,*\d*}:*:*\w*)|([^,\n]+)',header)
+    return res
 
 def read_line(line,headers):
     i = 0
@@ -66,7 +59,7 @@ def converter(lines, headers):
             else: header = h[0]
             if re.search(r'{\d,*\d*}:*:*\w*',header):
                 if re.search(r'::\w+',header):
-                    two_headers = re.findall(r'[a-zA-Z]+',header) #Falta acentos
+                    two_headers = re.findall(r'[^{,}:\d]+',header)
                     header = two_headers[0] + "_" + two_headers[1]
                 else: header = re.findall(r'\w+',header)[0]
             if (j == len(headers)-1):
@@ -87,7 +80,6 @@ def converter(lines, headers):
 f = open("teste.csv")
 lines = f.read().splitlines()
 f.close()
-aggregatedOperations = aggregatedcategories = normalCategories = []
 header = head_reader(lines[0])
 result = converter(lines[1:], header)
 f = open("result.json","w+")
