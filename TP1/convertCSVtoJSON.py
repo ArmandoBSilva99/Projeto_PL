@@ -1,3 +1,4 @@
+from ast import operator
 import re
 import sys
 from turtle import position
@@ -9,10 +10,33 @@ from typing import Tuple
 def head_reader(header):
     #aggregation e.g. Notas{4,5}
 
-    things = re.findall(r'(\w+{\d,*\d*}:*:*\w*)|([a-zA-Zú]+)',header) #adicionar maia acentos?
+    things = re.findall(r'(\w+{\d,*\d*}:*:*\w*)|([a-zA-Zú]+)',header) #adicionar mais acentos?
     print(things)
     return things
-    
+
+def read_line(line,headers):
+    i = 0
+    l = re.split(',',line)
+    res = []
+    for h in headers:
+        if (h[0]) == '': header = h[1]
+        else: header = h[0]
+        print("header: " + header)
+        if re.search(r'{\d}',header): 
+                print("entrei")
+                it = int(re.findall(r'\d',header)[0])
+                header = re.search(r'\w+',header)
+                numbers = []
+                while it > 0:
+                    numbers.append(l[i])
+                    i = i+1
+                    it = it-1
+                res.append(numbers)
+        else: 
+            res.append(l[i])
+            i = i + 1
+    return res
+
 def converter(lines, headers):
     result = "[\n"
     i = 0
@@ -25,10 +49,10 @@ def converter(lines, headers):
             else: header = h[0]
             if (j == len(headers)-1):
                 result += "\t\t"
-                result += "\"" + header + "\": " + l[j] + "\n"
+                result += "\"" + header + "\": " + "\"" + l[j] + "\"\n"
             else:
                 result += "\t\t"
-                result += "\"" + header + "\": " + l[j] + ",\n"
+                result += "\"" + header + "\": " + "\"" + l[j] + "\",\n"
             j = j + 1
         if (i == len(lines)-1):
             result += "\t}\n"
@@ -43,8 +67,10 @@ lines = f.read().splitlines()
 f.close()
 aggregatedOperations = aggregatedcategories = normalCategories = []
 header = head_reader(lines[0])
-result = converter(lines[1:], header)
-f = open("result.json","w+")
-f.write(result)
-f.close()
+res = read_line("7777,Cristiano Ronaldo,Desporto,17,12,20,11,12",header)
+print(res)
+#result = converter(lines[1:], header)
+#f = open("result.json","w+")
+#f.write(result)
+#f.close()
 
