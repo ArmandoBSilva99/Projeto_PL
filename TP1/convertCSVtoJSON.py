@@ -1,4 +1,5 @@
 from ast import operator
+from curses.ascii import isdigit
 import re
 import sys
 from turtle import position
@@ -23,14 +24,22 @@ def read_line(line,headers):
         else: header = h[0]
         print("header: " + header)
         if re.search(r'{\d}',header): 
-                it = int(re.findall(r'\d',header)[0])
-                header = re.search(r'\w+',header)
-                numbers = []
-                while it > 0:
-                    numbers.append(l[i])
-                    i = i+1
-                    it = it-1
-                res.append(numbers)
+            it = int(re.findall(r'\d',header)[0])
+            #header = re.search(r'\w+',header)
+            numbers = []
+            while it > 0:
+                numbers.append(l[i])
+                i = i+1
+                it = it-1
+            res.append(numbers)
+        elif re.search(r'{\d,\d}',header):
+            it = int(re.findall(r'\d',header)[1])
+            numbers = []
+            while it > 0 and re.search('\d',l[i]):
+                numbers.append(l[i])
+                i = i+1
+                it = it-1
+            res.append(numbers)
         else: 
             res.append(l[i])
             i = i + 1
@@ -45,7 +54,7 @@ def converter(lines, headers):
         l = read_line(line,headers)
         for h in headers:
             if (h[0]) == '': header = h[1]
-            else: header = h[0] 
+            else: header = h[0]
             if (j == len(headers)-1):
                 result += "\t\t"
                 if isinstance(l[j],list):
