@@ -3,27 +3,18 @@
 		"Número": "3162",
 		"Nome": "Cândido Faísca",
 		"Curso": "Teatro",
-		"Notas{5}": "12",
-		"Notas{3,5}::sum": "13",
-		"Resultado": "14",
-		"Notas{3,5}::media": ""
+		"Notas{5}": [12,13,14,,]
 	},
 	{
 		"Número": "7777",
 		"Nome": "Cristiano Ronaldo",
 		"Curso": "Desporto",
-		"Notas{5}": "17",
-		"Notas{3,5}::sum": "12",
-		"Resultado": "20",
-		"Notas{3,5}::media": "11"
+		"Notas{5}": [17,12,20,11,12]
 	},
 	{
 		"Número": "264",
 		"Nome": "Marcelo Sousa",
 		"Curso": "Ciência Política",
-		"Notas{5}": "18",
-		"Notas{3,5}::sum": "19",
-		"Resultado": "19",
-		"Notas{3,5}::media": "20"
+		"Notas{5}": [18,19,19,20,]
 	}
 ]
