@@ -23,7 +23,7 @@ def read_line(line,headers):
         if (h[0]) == '': header = h[1]
         else: header = h[0]
         print("header: " + header)
-        if re.search(r'{\d}',header): 
+        if re.search(r'{\d}',header): #Listas com tamanho definido 
             it = int(re.findall(r'\d',header)[0])
             #header = re.search(r'\w+',header)
             numbers = []
@@ -32,14 +32,22 @@ def read_line(line,headers):
                 i = i+1
                 it = it-1
             res.append(numbers)
-        elif re.search(r'{\d,\d}',header):
+        elif re.search(r'{\d,\d}',header): #Listas com um intervalo de tamanhos
             it = int(re.findall(r'\d',header)[1])
             numbers = []
-            while it > 0 and re.search('\d',l[i]):
+            while it > 0 and re.search('\d',l[i]): #falta tratar dos casos em q o número é menor do q o mínimo indicado no intervalo
                 numbers.append(l[i])
                 i = i+1
                 it = it-1
-            res.append(numbers)
+            
+            if re.search(r'::\w+',header):  #Funções de agregação
+                op = re.findall(r':\w+',header)[0][1:]
+                numbers = [int(num) for num in numbers]
+                if op == "sum": op_res = sum(numbers)
+                elif op == "media": op_res = sum(numbers)/len(numbers)
+                res.append(str(op_res))
+
+            else: res.append(numbers)
         else: 
             res.append(l[i])
             i = i + 1
@@ -55,6 +63,9 @@ def converter(lines, headers):
         for h in headers:
             if (h[0]) == '': header = h[1]
             else: header = h[0]
+            if re.search(r'::\w+',header):
+                two_headers = re.findall(r'[a-zA-Z]+',header) #Falta acentos
+                header = two_headers[0] + "_" + two_headers[1]
             if (j == len(headers)-1):
                 result += "\t\t"
                 if isinstance(l[j],list):
