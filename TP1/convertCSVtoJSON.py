@@ -25,7 +25,6 @@ def read_line(line,headers):
         print("header: " + header)
         if re.search(r'{\d}',header): #Listas com tamanho definido 
             it = int(re.findall(r'\d',header)[0])
-            #header = re.search(r'\w+',header)
             numbers = []
             while it > 0:
                 numbers.append(l[i])
@@ -47,9 +46,11 @@ def read_line(line,headers):
                 elif op == "media": op_res = sum(numbers)/len(numbers)
                 res.append(str(op_res))
 
-            else: res.append(numbers)
+            else:
+                numbers = "[" + ','.join(map(str, numbers)) + "]" 
+                res.append(numbers)
         else: 
-            res.append(l[i])
+            res.append("\"" + l[i] + "\"")
             i = i + 1
     return res
 
@@ -63,21 +64,17 @@ def converter(lines, headers):
         for h in headers:
             if (h[0]) == '': header = h[1]
             else: header = h[0]
-            if re.search(r'::\w+',header):
-                two_headers = re.findall(r'[a-zA-Z]+',header) #Falta acentos
-                header = two_headers[0] + "_" + two_headers[1]
+            if re.search(r'{\d,*\d*}:*:*\w*',header):
+                if re.search(r'::\w+',header):
+                    two_headers = re.findall(r'[a-zA-Z]+',header) #Falta acentos
+                    header = two_headers[0] + "_" + two_headers[1]
+                else: header = re.findall(r'\w+',header)[0]
             if (j == len(headers)-1):
                 result += "\t\t"
-                if isinstance(l[j],list):
-                    l[j] = ','.join(map(str, l[j]))
-                    result += "\"" + header + "\": " + "[" + l[j] + "]\n"
-                else: result += "\"" + header + "\": " + "\"" + l[j] + "\"\n"
+                result += "\"" + header + "\": " + l[j] + "\n"
             else:
                 result += "\t\t"
-                if isinstance(l[j],list):
-                    l[j] = ','.join(map(str, l[j]))
-                    result += "\"" + header + "\": " + "[" + l[j] + "],\n"
-                else: result += "\"" + header + "\": " + "\"" + l[j] + "\",\n"
+                result += "\"" + header + "\": " + l[j] + ",\n"
             j = j + 1
         if (i == len(lines)-1):
             result += "\t}\n"
@@ -92,8 +89,6 @@ lines = f.read().splitlines()
 f.close()
 aggregatedOperations = aggregatedcategories = normalCategories = []
 header = head_reader(lines[0])
-#res = read_line("7777,Cristiano Ronaldo,Desporto,17,12,20,11,12",header)
-#print(res)
 result = converter(lines[1:], header)
 f = open("result.json","w+")
 f.write(result)
