@@ -3,18 +3,21 @@
 		"Número": "3162",
 		"Nome": "Cândido Faísca",
 		"Curso": "Teatro",
-		"Notas_media": 13.0
+		"Notas_media": 13.0,
+		"Notas_sum": 66
 	},
 	{
 		"Número": "7777",
 		"Nome": "Cristiano Ronaldo",
 		"Curso": "Desporto",
-		"Notas_media": 14.4
+		"Notas_media": 14.4,
+		"Notas_sum": 65
 	},
 	{
 		"Número": "264",
 		"Nome": "Marcelo Sousa",
 		"Curso": "Ciência Política",
-		"Notas_media": 19.0
+		"Notas_media": 19.0,
+		"Notas_sum": 64
 	}
 ]

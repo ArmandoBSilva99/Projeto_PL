@@ -34,12 +34,9 @@ def read_line(line):
     l = re.split(',',line)
     res = []
     for j in range(0,len(headers)):
-        print(operations[j])
         numbers = []
         if operations[j] != "none":
-            print("#1" + str(i))
             if len(intervals[j]) == 1: #Listas com tamanho definido
-                print("len: " + str(len(intervals[j])))
                 it = int(intervals[j][0])
                 while it > 0:
                     numbers.append(l[i])
@@ -51,6 +48,7 @@ def read_line(line):
                     numbers.append(l[i])
                     i = i+1
                     it = it-1
+                i = it + i
 
             if operations[j] != "list":  #Funções de agregação
                 numbers = [int(num) for num in numbers]
@@ -65,8 +63,6 @@ def read_line(line):
                 res.append(numbers)
         
         else:
-            print("#3" + str(i))
-            print(l[i])
             res.append("\"" + l[i] + "\"")
             i = i+1
     return res 
