@@ -1,4 +1,5 @@
 from ast import operator
+from curses.ascii import isdigit
 import re
 import sys
 from unicodedata import numeric
@@ -6,6 +7,7 @@ from unicodedata import numeric
 headers = []
 operations = []
 intervals = []
+defined_op = ["sum", "media", "min", "max"]
 
 def head_reader(header):
     hs = re.findall(r'([^,\n]+{\d,*\d*}:*:*\w*)|([^,\n]+)',header)
@@ -13,17 +15,32 @@ def head_reader(header):
         if (h[0]) == '': h = h[1]
         else: h = h[0]
         if re.search(r'{\d,*\d*}:*:*\w*',h):
+            interval = re.findall(r'\d',h)
+            
+            #Error Handling dos intervalos
+            if  (len(interval) == 1 and isdigit(interval[0])) or ( len(interval) == 2 and isdigit(interval[0]) and isdigit(interval[1]) and int(interval[0]) < int(interval[1]) ):
+                intervals.append(interval)
+            else:
+                raise NameError("Intervalo inválido!\n")
+
             if re.search(r'::\w+',h):
+                op = re.findall(r':\w+',h)[0][1:]
+                
+                #Error Handling das operações (Aceita operações escritas em maiúscula)
+                if (str(op).lower() in defined_op):
+                    operations.append(op)
+                else: 
+                    raise NameError("Operação inexistente!\n") 
+                
+
                 two_headers = re.findall(r'[^{,}:\d]+',h)
                 headers.append(two_headers[0] + "_" + two_headers[1])
-                op = re.findall(r':\w+',h)[0][1:]
-                operations.append(op)
+                
             else:
                 name = re.findall(r'\w+',h)[0]
                 headers.append(name)
                 operations.append("list")
-            interval = re.findall(r'\d',h)
-            intervals.append(interval)
+
         else:
             headers.append(h)
             operations.append("none")
@@ -34,33 +51,43 @@ def read_line(line):
     l = re.split(',',line)
     res = []
     for j in range(0,len(headers)):
-        numbers = []
+        elements = []
         if operations[j] != "none":
             if len(intervals[j]) == 1: #Listas com tamanho definido
                 it = int(intervals[j][0])
                 while it > 0:
-                    numbers.append(l[i])
+                    if re.search(r'\w', l[i]):
+                        elements.append(l[i])
                     i = i+1
-                    it = it-1
+                    it = it-1     
             else: #Listas com um intervalo de tamanhos
-                it = int(intervals[j][1])
-                while it > 0 and re.search('\d',l[i]): #falta tratar dos casos em q o número é menor do q o mínimo indicado no intervalo
-                    numbers.append(l[i])
+                it = int(intervals[j][1]) 
+
+                while it > 0: #falta tratar dos casos em q o número é menor do q o mínimo indicado no intervalo
+                    if re.search(r'\w', l[i]):
+                        elements.append(l[i])
                     i = i+1
                     it = it-1
-                i = it + i
-
+                             
+                
             if operations[j] != "list":  #Funções de agregação
-                numbers = [int(num) for num in numbers]
-                if operations[j] == "sum": op_res = sum(numbers)
-                elif operations[j] == "media": op_res = sum(numbers)/len(numbers)
-                elif operations[j] == "min": op_res = min(numbers)
-                elif operations[j] == "max": op_res = max(numbers)
+                
+                #Error handling Aggregation Function
+                for elem in elements:
+                    for digit in elem:
+                        if not isdigit(digit):
+                            raise NameError("Impossível aplicar função de agregassão!\n")
+
+                elements = [int(num) for num in elements]
+                if operations[j] == "sum": op_res = sum(elements)
+                elif operations[j] == "media": op_res = sum(elements)/len(elements)
+                elif operations[j] == "min": op_res = min(elements)
+                elif operations[j] == "max": op_res = max(elements)
                 res.append(str(op_res))
 
             else:
-                numbers = "[" + ','.join(map(str, numbers)) + "]" 
-                res.append(numbers)
+                elements = "[" + ','.join(map(str, elements)) + "]" 
+                res.append(elements)
         
         else:
             res.append("\"" + l[i] + "\"")
