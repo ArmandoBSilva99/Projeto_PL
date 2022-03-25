@@ -1,8 +1,6 @@
-from ast import operator
 from curses.ascii import isdigit
 import re
 import sys
-from unicodedata import numeric
 
 headers = []
 operations = []
@@ -70,7 +68,7 @@ def read_line(line):
             else: #Listas com um intervalo de tamanhos
                 it = int(intervals[j][1]) 
 
-                while it > 0: #falta tratar dos casos em q o número é menor do q o mínimo indicado no intervalo
+                while it > 0:
                     
                     if i >= len(l):
                         raise NameError("Faltam elementos!\n")      
@@ -150,13 +148,20 @@ def converter(lines):
     result += "]\n"
     return result  
 
-    
-f = open("teste2.csv")
-lines = f.read().splitlines()
-f.close()
-header = head_reader(lines[0])
-result = converter(lines[1:])
-f = open("result.json","w+")
-f.write(result)
-f.close()
+def main():
+    if len(sys.argv) == 1: file = "teste.csv"
+    elif len(sys.argv) > 2: 
+        raise NameError("Argumentos a mais na função principal\n")
+    else: file = sys.argv[1]
+
+    f = open(file)
+    lines = f.read().splitlines()
+    f.close()
+    head_reader(lines[0])
+    result = converter(lines[1:])
+    f = open(file[:-4] + ".json","w+")
+    f.write(result)
+    f.close()
+
+main()
 

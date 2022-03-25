@@ -1,14 +1,23 @@
 [
 	{
-		"Número": "444",
-		"Nome": "Armando",
-		"Cursos": ["MIEI","LEI","CC"],
-		"Notas_min": 10
+		"Número": "3162",
+		"Nome": "Cândido Faísca",
+		"Curso": "Teatro",
+		"Notas": [11,11,11,11,11],
+		"Notas_media": 13.0
 	},
 	{
-		"Número": "555",
-		"Nome": "Joana",
-		"Cursos": ["CC","Historia","MIEGSI"],
-		"Notas_min": 12
+		"Número": "7777",
+		"Nome": "Cristiano Ronaldo",
+		"Curso": "Desporto",
+		"Notas": [11,11,11,11,11],
+		"Notas_media": 14.4
+	},
+	{
+		"Número": "264",
+		"Nome": "Marcelo Sousa",
+		"Curso": "Ciência Política",
+		"Notas": [11,11,11,11,11],
+		"Notas_media": 19.0
 	}
 ]
