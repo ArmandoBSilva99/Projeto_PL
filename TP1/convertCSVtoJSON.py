@@ -100,8 +100,27 @@ def read_line(line):
                 res.append(str(op_res))
 
             else:
-                elements = "[" + ','.join(map(str, elements)) + "]" 
-                res.append(elements)
+                is_number = False
+                is_word = False
+                
+                #Error handling List Coherence
+                for elem in elements:
+                    for digit in elem:
+                        if not isdigit(digit):
+                            is_word = True
+                        else:
+                            is_number = True
+
+                if is_number and is_word:
+                      raise NameError("Incoerência nos parâmetros da lista\n")      
+
+                # List correction 
+                if is_number:
+                    elements = "[" + ','.join(map(str, elements)) + "]" 
+                    res.append(elements)
+                else:
+                    elements = "[" + "\"" + '\",\"'.join(elements) + "\"" + "]"
+                    res.append(elements)   
         
         else:
             res.append("\"" + l[i] + "\"")
@@ -131,7 +150,8 @@ def converter(lines):
     result += "]\n"
     return result  
 
-f = open("teste1.csv")
+    
+f = open("teste2.csv")
 lines = f.read().splitlines()
 f.close()
 header = head_reader(lines[0])
