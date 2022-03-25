@@ -56,19 +56,33 @@ def read_line(line):
             if len(intervals[j]) == 1: #Listas com tamanho definido
                 it = int(intervals[j][0])
                 while it > 0:
-                    if re.search(r'\w', l[i]):
-                        elements.append(l[i])
+                    
+                    if i >= len(l) or not re.search(r'\w', l[i]):
+                        raise NameError("Faltam elementos!\n")   
+                    
+                    elements.append(l[i])
                     i = i+1
-                    it = it-1     
+                    it = it-1
+            
+                if i == len(l)-1 and not re.search(r'\n', l[i]):
+                    raise NameError("Faltam elementos!\n")
+
             else: #Listas com um intervalo de tamanhos
                 it = int(intervals[j][1]) 
 
                 while it > 0: #falta tratar dos casos em q o número é menor do q o mínimo indicado no intervalo
+                    
+                    if i >= len(l):
+                        raise NameError("Faltam elementos!\n")      
+                    
                     if re.search(r'\w', l[i]):
                         elements.append(l[i])
+
                     i = i+1
                     it = it-1
-                             
+
+                if i == len(l)-1 and not re.search(r'\n', l[i]):
+                    raise NameError("Faltam elementos!\n")             
                 
             if operations[j] != "list":  #Funções de agregação
                 
@@ -117,7 +131,7 @@ def converter(lines):
     result += "]\n"
     return result  
 
-f = open("teste.csv")
+f = open("teste1.csv")
 lines = f.read().splitlines()
 f.close()
 header = head_reader(lines[0])
