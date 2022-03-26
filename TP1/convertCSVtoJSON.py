@@ -20,8 +20,18 @@ def head_reader(header):
                 intervals.append(interval)
             else:
                 raise NameError("Intervalo inválido!\n")
+            
+            #Error Handling das vírgulas
+            interval = [int(num) for num in interval]
+            maxInt = max(interval)
+            new_s = h.replace("{","\{")
+            new_s = new_s.replace("}","\}")
+            er = r'(' + new_s + r',{' + str(maxInt-1) + r'}$)|(' + new_s + r',{' + str(maxInt) + r'}\w)'
+            
+            if not re.search(er, header):
+                raise NameError("Cabeçalho inválido!\n")
 
-            if re.search(r'::\w+',h):
+            if re.search(r'::\w+',h):    
                 op = re.findall(r':\w+',h)[0][1:]
                 
                 #Error Handling das operações (Aceita operações escritas em maiúscula)
@@ -35,6 +45,7 @@ def head_reader(header):
                 headers.append(two_headers[0] + "_" + two_headers[1])
                 
             else:
+                
                 name = re.findall(r'\w+',h)[0]
                 headers.append(name)
                 operations.append("list")
@@ -42,7 +53,7 @@ def head_reader(header):
         else:
             headers.append(h)
             operations.append("none")
-            intervals.append(0)
+            intervals.append(0)    
 
 def read_line(line):
     i = 0
