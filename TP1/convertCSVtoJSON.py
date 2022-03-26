@@ -40,12 +40,10 @@ def head_reader(header):
                 else: 
                     raise NameError("Operação inexistente!\n") 
                 
-
                 two_headers = re.findall(r'[^{,}:\d]+',h)
                 headers.append(two_headers[0] + "_" + two_headers[1])
                 
             else:
-                
                 name = re.findall(r'\w+',h)[0]
                 headers.append(name)
                 operations.append("list")
@@ -66,6 +64,7 @@ def read_line(line):
                 it = int(intervals[j][0])
                 while it > 0:
                     
+                    #Error handling das vírgulas
                     if i >= len(l) or not re.search(r'\w', l[i]):
                         raise NameError("Faltam elementos!\n")   
                     
@@ -73,6 +72,7 @@ def read_line(line):
                     i = i+1
                     it = it-1
             
+                #Error handling das vírgulas
                 if i == len(l)-1 and not re.search(r'\n', l[i]):
                     raise NameError("Faltam elementos!\n")
 
@@ -81,6 +81,7 @@ def read_line(line):
 
                 while it > 0:
                     
+                    #Error handling das vírgulas
                     if i >= len(l):
                         raise NameError("Faltam elementos!\n")      
                     
@@ -90,6 +91,7 @@ def read_line(line):
                     i = i+1
                     it = it-1
 
+                #Error handling das vírgulas
                 if i == len(l)-1 and not re.search(r'\n', l[i]):
                     raise NameError("Faltam elementos!\n")             
                 
@@ -108,29 +110,30 @@ def read_line(line):
                 elif operations[j] == "max": op_res = max(elements)
                 res.append(str(op_res))
 
-            else:
-                is_number = False
-                is_word = False
-                
-                #Error handling List Coherence
-                for elem in elements:
-                    for digit in elem:
-                        if not isdigit(digit):
-                            is_word = True
-                        else:
-                            is_number = True
-
-                if is_number and is_word:
-                      raise NameError("Incoerência nos parâmetros da lista\n")      
-
+            else:   
                 # List correction 
-                if is_number:
-                    elements = "[" + ','.join(map(str, elements)) + "]" 
-                    res.append(elements)
+                if (len(elements) > 0):
+                    is_number = False
+                    is_word = False
+                    
+                    #Error handling List coherence
+                    for elem in elements:
+                        for digit in elem:
+                            if not isdigit(digit):
+                                is_word = True
+                            else:
+                                is_number = True
+
+                    if is_number and is_word:
+                      raise NameError("Incoerência nos parâmetros da lista\n")   
+                    if is_number:
+                        elements = "[" + ','.join(map(str, elements)) + "]" 
+                        res.append(elements)
+                    else:
+                        elements = "[" + "\"" + '\",\"'.join(elements) + "\"" + "]"
+                        res.append(elements)
                 else:
-                    elements = "[" + "\"" + '\",\"'.join(elements) + "\"" + "]"
-                    res.append(elements)   
-        
+                    res.append("[]")
         else:
             res.append("\"" + l[i] + "\"")
             i = i+1
@@ -175,4 +178,3 @@ def main():
     f.close()
 
 main()
-
