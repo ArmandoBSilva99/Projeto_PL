@@ -19,9 +19,9 @@ def head_reader(header):
             if  (len(interval) == 1 and isdigit(interval[0])) or ( len(interval) == 2 and isdigit(interval[0]) and isdigit(interval[1]) and int(interval[0]) < int(interval[1]) ):
                 intervals.append(interval)
             else:
-                raise NameError("Intervalo inválido!\n")
+                raise NameError("Intervalo invalido!\n")
             
-            #Error Handling das vírgulas
+            #Error Handling das virgulas
             interval = [int(num) for num in interval]
             maxInt = max(interval)
             new_s = h.replace("{","\{")
@@ -29,16 +29,16 @@ def head_reader(header):
             er = r'(' + new_s + r',{' + str(maxInt-1) + r'}$)|(' + new_s + r',{' + str(maxInt) + r'}\w)'
             
             if not re.search(er, header):
-                raise NameError("Cabeçalho inválido!\n")
+                raise NameError("Cabecalho invalido!\n")
 
             if re.search(r'::\w+',h):    
                 op = re.findall(r':\w+',h)[0][1:]
                 
-                #Error Handling das operações (Aceita operações escritas em maiúscula)
+                #Error Handling das operacoes 
                 if (str(op).lower() in defined_op):
                     operations.append(op)
                 else: 
-                    raise NameError("Operação inexistente!\n") 
+                    raise NameError("Operacao inexistente!\n") 
                 
                 two_headers = re.findall(r'[^{,}:\d]+',h)
                 headers.append(two_headers[0] + "_" + two_headers[1])
@@ -64,26 +64,26 @@ def read_line(line):
                 it = int(intervals[j][0])
                 while it > 0:
                     
-                    #Error handling das vírgulas
+                    #Error handling das virgulas
                     if i >= len(l) or not re.search(r'\w', l[i]):
-                        raise NameError("Faltam elementos!\n")   
+                        raise NameError("Numero de elementos invalido!\n")   
                     
                     elements.append(l[i])
                     i = i+1
                     it = it-1
             
-                #Error handling das vírgulas
+                #Error handling das virgulas
                 if i == len(l)-1 and not re.search(r'\n', l[i]):
-                    raise NameError("Faltam elementos!\n")
+                    raise NameError("Numero de elementos invalido!\n")
 
             else: #Listas com um intervalo de tamanhos
                 it = int(intervals[j][1]) 
 
                 while it > 0:
                     
-                    #Error handling das vírgulas
+                    #Error handling das virgulas
                     if i >= len(l):
-                        raise NameError("Faltam elementos!\n")      
+                        raise NameError("Numero de elementos invalido!\n")      
                     
                     if re.search(r'\w', l[i]):
                         elements.append(l[i])
@@ -91,17 +91,17 @@ def read_line(line):
                     i = i+1
                     it = it-1
 
-                #Error handling das vírgulas
+                #Error handling das virgulas
                 if i == len(l)-1 and not re.search(r'\n', l[i]):
-                    raise NameError("Faltam elementos!\n")             
+                    raise NameError("Numero de elementos invalido!\n")             
                 
-            if operations[j] != "list":  #Funções de agregação
+            if operations[j] != "list":  #Funcoes de agregacao
                 
-                #Error handling Aggregation Function
+                #Error handling Funcoes de Agregacao
                 for elem in elements:
                     for digit in elem:
                         if not isdigit(digit):
-                            raise NameError("Impossível aplicar função de agregassão!\n")
+                            raise NameError("Impossivel aplicar funcao de agregacao!\n")
 
                 elements = [int(num) for num in elements]
                 if operations[j] == "sum": op_res = sum(elements)
@@ -116,7 +116,7 @@ def read_line(line):
                     is_number = False
                     is_word = False
                     
-                    #Error handling List coherence
+                    #Error handling da coerencia das listas
                     for elem in elements:
                         for digit in elem:
                             if not isdigit(digit):
@@ -125,7 +125,7 @@ def read_line(line):
                                 is_number = True
 
                     if is_number and is_word:
-                      raise NameError("Incoerência nos parâmetros da lista\n")   
+                      raise NameError("Incoerencia nos parametros da lista\n")   
                     if is_number:
                         elements = "[" + ','.join(map(str, elements)) + "]" 
                         res.append(elements)
@@ -165,7 +165,7 @@ def converter(lines):
 def main():
     if len(sys.argv) == 1: file = "teste.csv"
     elif len(sys.argv) > 2: 
-        raise NameError("Argumentos a mais na função principal\n")
+        raise NameError("Argumentos a mais na funcao principal\n")
     else: file = sys.argv[1]
 
     f = open(file)
