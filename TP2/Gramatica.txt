@@ -19,9 +19,7 @@ P11 :        | ERROR '('
 --------------falta acabar
 
 P12 : Lista -> '[' Elementos ']'
-    
-P13 : Conteudo -> 
-P14 :          | Elementos
+P13:         |
 
-P15 : Elementos -> TOK
-P16 :            | TOK ',' Elementos
+P14 : Elementos -> TOK
+P15 :            | TOK ',' Elementos

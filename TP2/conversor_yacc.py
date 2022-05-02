@@ -8,50 +8,67 @@ precedence = [('left','+','-'),
               ('left','*','/'),
               ('right','UMINUS'),]
 
-def p_stat_atrib(p):
-    "stat : VAR '=' exp"
-    parser.ts[p[1]] = p[3]
+def p_programa(p):
+    'programa : lex yacc'
+    p[0] = p[1] + p[2]
 
-def p_stat_exp(p):
-    "stat : exp"
-    print(p[1])
+def p_lex(p):
+    'lex : vars funcs'
+    p[0] = p[1] + p[2]
 
-def p_exp_add(p):
-    "exp : exp '+' exp"
-    p[0] = p[1] + p[3]
+def p_vars_list(p):
+    'vars : vars var'
+    p[0] = p[1] + p[2]
 
-def p_exp_sub(p):
-    "exp : exp '-' exp"
-    p[0] = p[1] - p[3]
+def p_vars_empty(p):
+    'vars : '
+    p[0] = ""
 
-def p_exp_mul(p):
-    "exp : exp '*' exp"
-    p[0] = p[1] * p[3]
+def p_var_string(p):
+    "var : PERC ID '=' STRING"
+    p[2] = p[4] #not sure
 
-def p_exp_div(p):
-    "exp : exp '/' exp"
-    p[0] = p[1] / p[3]
+def p_var_lista(p):
+    "var : PERC ID '=' lista"
+    p[2] = p[4] #also not sure
 
-def p_exp_uminus(p):
-    "exp : '-' exp %prec UMINUS"
-    p[0] = -p[2]
+def p_funcs_list(p):
+    'funcs : funcs func'
+    p[0] = p[1] + p[2]
 
-def p_exp_par(p):
-    "exp : '(' exp ')'"
-    p[0] = p[2]
+def p_funcs_empty(p):
+    'funcs : '
+    p[0] = ""
 
-def p_exp_NUMBER(p):
-    "exp : NUMBER"
+def p_func(p):
+    'func : ER return'
+
+def p_lista_elems(p) :
+    "lista : '[' elementos ']'"
+
+def p_lista_empty(p):
+    'lista : '
+    p[0] = ""
+
+def p_elementos_tok(p):
+    'elementos : TOK'
     p[0] = p[1]
 
-def p_exp_VAR(p):
-    "exp : VAR"
-    var = p[1]
-    if var in parser.ts:
-        p[0] = parser.ts[var]
-    else:
-        print("Variável '{var}' não definida!")
-        exit()
+def p_elementos_list(p):
+    "elementos : TOK ',' elementos"
+    p[0] = p[1] + p[3]
+
+def p_return_simple(p):
+    'return : SPACE return'
+    p[0] = p[2] #???
+
+def p_return_elems(p):
+    "return : RETURN '(' TOK ',' RET_ELEM ')'"
+    p[0] = p[3] + p[5] #not sure
+
+def p_return_error(p):
+    "return : "
+    #falta acabar
 
 def p_error(p):
     print("Erro sintático!")
