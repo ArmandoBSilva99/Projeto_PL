@@ -4,12 +4,8 @@ import sys
 from conversor_lex import tokens
 from conversor_lex import literals
 
-precedence = [('left','+','-'),
-              ('left','*','/'),
-              ('right','UMINUS'),]
-
 def p_programa(p):
-    'programa : lex yacc'
+    'programa : lex' #yacc
     p[0] = p[1] + p[2]
 
 def p_lex(p):
@@ -22,11 +18,11 @@ def p_vars_list(p):
 
 def p_vars_empty(p):
     'vars : '
-    p[0] = ""
+    p[0] = ''
 
 def p_var_string(p):
     "var : PERC ID '=' STRING"
-    p[2] = p[4] #not sure
+    p[0] = p[2] + '=' + p[4] #not sure
 
 def p_var_lista(p):
     "var : PERC ID '=' lista"
@@ -34,7 +30,13 @@ def p_var_lista(p):
 
 def p_funcs_list(p):
     'funcs : funcs func'
-    p[0] = p[1] + p[2]
+    print("0")
+    print(p[0])
+    print("1")
+    print(p[1])
+    print("2")
+    print(p[2])
+    #p[0] = p[1] + p[2]
 
 def p_funcs_empty(p):
     'funcs : '
@@ -58,10 +60,6 @@ def p_elementos_list(p):
     "elementos : TOK ',' elementos"
     p[0] = p[1] + p[3]
 
-def p_return_simple(p):
-    'return : SPACE return'
-    p[0] = p[2] #???
-
 def p_return_elems(p):
     "return : RETURN '(' TOK ',' RET_ELEM ')'"
     p[0] = p[3] + p[5] #not sure
@@ -76,5 +74,10 @@ def p_error(p):
 parser = yacc.yacc()
 parser.ts = {}
 
-for line in sys.stdin:
-    parser.parse(line)
+f = open('grammar.txt', 'r')
+
+content = f.read()
+result = parser.parse(content)
+
+f.close()
+

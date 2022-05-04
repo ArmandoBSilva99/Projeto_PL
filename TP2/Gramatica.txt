@@ -13,8 +13,7 @@ P7 :      | PERC ID '=' Lista
 
 P8 : Func -> ER Return
 
-P9 : Return -> SPACE Return 
-P10 :        | RETURN '(' TOK ',' RET_ELEM ')'
+P9 : Return -> RETURN '(' TOK ',' RET_ELEM ')'
 P11 :        | ERROR '('
 --------------falta acabar
 
