@@ -2,7 +2,7 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['ID', 'STRING', 'PERC', "ER", "RETURN", "TOK", "RETELEM", "ERROR", "COMMENT", "LIST"]
+tokens = ['ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "RETELEM", "ERROR", "COMMENT", "LIST", "FUNCTIONS", "END"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive")]
 
@@ -15,6 +15,11 @@ def t_yacc(t):
     r'%%\sYACC'
     print("YACC: " + t.value)
     #t.lexer.push_state("yacc")
+
+def t_functions(t):
+    r'%%\sFUNCTIONS'
+    print("FUNCTIONS: " + t.value)
+    t.lexer.begin("func")
 
 def t_var_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
@@ -50,26 +55,36 @@ def t_COMMENT(t):
     print("COMMENT: " + t.value)
     return t
 
-def t_ER(t): #isto fica estranho pq pode ser qualquer coisa
-    r'[^\s]+'
-    print("ER: " + t.value)
-    t.lexer.begin("func")
-    return t
-
 def t_func_RETURN(t):
-    r'return\('
+    r'return'
     print("RETURN: " + t.value)
     return t
 
-def t_func_RETELEM(t):
-    r'[a-zA-Z\(\)\.]+\)'
-    print("RETELEM: " + t.value)
+def t_func_ERROR(t):
+    r'error'
+    print("ERROR: " + t.value)
+    return t
+
+def t_func_END(t):
+    r'%%\sEND'
+    print("END: " + t.value)
     t.lexer.begin("INITIAL")
     return t
 
-def t_func_TOK(t):
-    r'[a-zA-Z]+'
-    print("TOK: " + t.value)
+def t_func_STRING(t):
+    r'\".*\"'
+    print("STRING: " + t.value)
+    return t
+
+def t_func_PAL(t):
+    r'[a-zA-Z0-9\.\(\)]+'
+    print("PAL: " + t.value)
+    return t
+
+def t_func_ER(t): 
+    r'[^\s]+'
+    print("ER: " + t.value)
+    #t.lexer.begin("func")
     return t
 
 
@@ -81,14 +96,10 @@ def t_func_TOK(t):
     #????
 #    pass
 
-def t_ERROR(t):
-    r'error'
-    print("ERROR: " + t.value)
-    return t
 
 t_ignore = " \t\n\r"
 t_var_ignore = " \t\n\r"
-t_func_ignore = " \t\n\r,'"
+t_func_ignore = " \t\n\r,'()"
 
 #def t_lex_error(t):
 #    print("Illegal character: ", t.value[0])
@@ -96,7 +107,11 @@ t_func_ignore = " \t\n\r,'"
 
 def t_var_error(t):
     print("Illegal character: ", t.value[0])
-    t.lexer.skip(1)   
+    t.lexer.skip(1)
+
+def t_func_error(t):
+    print("Illegal character: ", t.value[0])
+    t.lexer.skip(1) 
 
 def t_error(t):
     print("Illegal character: ", t.value[0])

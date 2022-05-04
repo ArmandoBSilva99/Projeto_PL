@@ -13,9 +13,10 @@ P7 :      | PERC ID '=' Lista
 
 P8 : Func -> ER Return
 
-P9 : Return -> RETURN '(' TOK ',' RET_ELEM ')'
-P11 :        | ERROR '('
---------------falta acabar
+P9 : Return -> RETURN '(' PAL ',' PAL ')'
+             | ERROR '(' PAL STRING ',' PAL ')'
+P11 :        | ERROR '(' STRING ',' PAL ')'
+--------------penso que possa ser assim?
 
 P12 : Lista -> '[' Elementos ']'
 P13:         |
