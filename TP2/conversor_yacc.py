@@ -74,7 +74,7 @@ def p_error(p):
 parser = yacc.yacc()
 parser.ts = {}
 
-f = open('grammar.txt', 'r')
+f = open('sintaxe.txt', 'r')
 
 content = f.read()
 result = parser.parse(content)

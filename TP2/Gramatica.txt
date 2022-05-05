@@ -10,6 +10,7 @@ P5 :       | Funcs Func
 
 P6 : Var -> PERC ID '=' STRING
 P7 :      | PERC ID '=' Lista
+          | PERC ID '=' EMPTYLIST
 
 P8 : Func -> ER Return
 
@@ -23,3 +24,5 @@ P13:         |
 
 P14 : Elementos -> TOK
 P15 :            | TOK ',' Elementos
+
+P16 : Er -> STRING '{' EXP '}'
