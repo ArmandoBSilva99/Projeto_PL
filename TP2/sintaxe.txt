@@ -29,7 +29,7 @@
 "exp  : NUMBER"               { t[0] = t[1] }
 "exp  : VAR"                  { t[0] = getval(t[1]) }
 
-%%
+%% PYTHON
 
 def p_error(t):
     print(f"Syntax error at '{t.value}', [{t.lexer.lineno}]")
@@ -38,5 +38,5 @@ def getval(n):
     if n not in ts: print(f"Undefined name '{n}'")
     return ts.get(n,0)
 
-y=yacc()
+%y=yacc()
 y.parse("3+4*7")

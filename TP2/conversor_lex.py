@@ -2,9 +2,9 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "RETELEM", "ERROR", "COMMENT", "LIST", "FUNCTIONS", "END", "EMPTYLIST", "EXP"]
+tokens = ['ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "RETELEM", "ERROR", "COMMENT", "LIST", "FUNCTIONS", "END", "EMPTYLIST", "EXP", "YACC", "PYTHON", "TEXT"]
 literals = ['=', '(', ')', '[', ']', ',']
-states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive")]
+states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
 def t_lex(t):
     r'%%\sLEX'
@@ -37,6 +37,12 @@ def t_COMMENT(t):
     print("COMMENT: " + t.value)
     return t
 
+def t_var_YACC(t):
+    r'yacc\(\)'
+    print("YACC: " + t.value)
+    t.lexer.begin("python")
+    return t      
+
 def t_var_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     print("ID: " + t.value)
@@ -56,7 +62,7 @@ def t_var_LIST(t):
 
 def t_var_COMMENT(t):
     r'\#.*'
-    print("COMMENT: " + t.value)
+    print("VAR_COMMENT: " + t.value)
     return t
 
 def t_var_EMPTYLIST(t):
@@ -64,6 +70,7 @@ def t_var_EMPTYLIST(t):
     print("EMPTYLIST: " + t.value)
     t.lexer.begin("INITIAL")
     return t
+  
 
 #def t_PERC(t):
 #    r'%'
@@ -108,24 +115,34 @@ def t_er_STRING(t):
     print("STRING: " + t.value)
     return t
 
+def t_er_PYTHON(t):
+    r'%%\sPYTHON'
+    print("PYTHON BEGIN: " + t.value)
+    t.lexer.begin("python")
+    return t 
+
 def t_er_EXP(t):
     r'[^\}]+'
     print("EXP: " + t.value)
     return t
 
-#def t_TOK(t):
-    #?
-#    pass
+def t_python_PERC(t):
+    r'%'
+    print("PYTHON PERC: " + t.value)
+    t.lexer.begin("var")
+    return t
 
-#def t_RET_ELEM(t):
-    #????
-#    pass
-
+def t_python_TEXT(t):
+    r'.+'
+    print("TEXT: " + t.value)
+    return t
+      
 
 t_ignore = " \t\n\r"
 t_var_ignore = " \t\n\r"
 t_func_ignore = " \t\n\r,'()"
 t_er_ignore = " \t\n\r}{"
+t_python_ignore = " \t\n\r"
 
 #def t_lex_error(t):
 #    print("Illegal character: ", t.value[0])
@@ -153,4 +170,3 @@ for line in file:
     lexer.input(line)
     for tok in lexer:
         pass
-
