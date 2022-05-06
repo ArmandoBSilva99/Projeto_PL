@@ -1,27 +1,27 @@
 P0 : Programa -> Vars Funcs Ers Python
 
 P1 : Vars -> 
-P2 :       | Vars Var
+P2 :       | Var Comments Vars
 
 P4 : Funcs ->
 P5 :       | Funcs Func
 
 P6 : Python -> PERC
-             | Python TEXT
+P7 :         | Python TEXT
+P8 :         | END
+
+P9 : Comments ->
+               | COMMENT Comments
 
 P6 : Var -> PERC ID '=' STRING
 P7 :      | PERC ID '=' LIST 
           | PERC ID '=' EMPTYLIST 
           | PERC ID '=' YACC
 
-P8 : Func -> ER Return
+P8 : Func -> ER RETURN '(' PAL ',' PAL ')'
+            | ERROR '(' PAL STRING ',' PAL ')'
+            | ERROR '(' STRING ',' PAL ')'
             | END
-
-P9 : Return -> RETURN '(' PAL ',' PAL ')'
-             | ERROR '(' PAL STRING ',' PAL ')'
-P11 :        | ERROR '(' STRING ',' PAL ')'
---------------penso que possa ser assim?
-
 
 P12 : Lista -> '[' Elementos ']'
 P13:         |
@@ -29,4 +29,7 @@ P13:         |
 P14 : Elementos -> TOK
 P15 :            | TOK ',' Elementos
 
-P16 : Er -> STRING '{' EXP '}'
+P16: Ers -> 
+          | Ers Er 
+
+P16 : Er -> EXP ':' STRING '{' EXP '}'
