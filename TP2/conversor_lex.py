@@ -2,7 +2,7 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "COMMENT", "LIST", "END", "EMPTYLIST", "EXP", "YACC", "TEXT", "PYTHON", "com"]
+tokens = ['ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "COMMENT", "LIST", "END", "EMPTYLIST", "EXP", "YACC", "TEXT", "PYTHON", "com", "FUNCTION"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
@@ -13,61 +13,61 @@ def t_lex(t):
 
 def t_yacc(t):
     r'%%\sYACC'
-    ##print("YACC: " + t.value)
+    print("YACC: " + t.value)
     #t.lexer.begin("yacc")
 
-def t_functions(t):
+def t_FUNCTION(t):
     r'%%\sFUNCTIONS'
-    ##print("FUNCTIONS: " + t.value)
+    print("FUNCTIONS: " + t.value)
     t.lexer.begin("func")
 
 def t_ers(t):
     r'%%\sERS'
-    ##print("ERS: " + t.value)
+    print("ERS: " + t.value)
     t.lexer.begin("er")
 
 def t_com(t):
     r'\#.*'
-    #print("COMMENT: " + t.value)
+    print("COMMENT: " + t.value)
     return t
 
 def t_PERC(t):
     r'%'
     t.lexer.begin("var")
-    #print("PERC: " + t.value)
+    print("PERC: " + t.value)
     return t
 
 def t_var_YACC(t):
     r'yacc\(\)'
-    #print("YACC: " + t.value)
+    print("YACC: " + t.value)
     t.lexer.begin("python")
     return t      
 
 def t_var_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
-    #print("ID: " + t.value)
+    print("ID: " + t.value)
     return t
 
 def t_var_STRING(t):
     r'\".*\"'
-    #print("STRING: " + t.value)
+    print("STRING: " + t.value)
     t.lexer.begin("INITIAL")
     return t
 
 def t_var_LIST(t):
     r'\[.*\]'
-    #print("LISTA: " + t.value)
+    print("LIST: " + t.value)
     t.lexer.begin("INITIAL")
     return t
 
 def t_var_COMMENT(t):
     r'\#.*'
-    #print("VAR_COMMENT: " + t.value)
+    print("VAR_COMMENT: " + t.value)
     return t
 
 def t_var_EMPTYLIST(t):
     r'\{\}'
-    #print("EMPTYLIST: " + t.value)
+    print("EMPTYLIST: " + t.value)
     t.lexer.begin("INITIAL")
     return t
   
@@ -80,67 +80,67 @@ def t_var_EMPTYLIST(t):
 
 def t_func_RETURN(t):
     r'return'
-    #print("RETURN: " + t.value)
+    print("RETURN: " + t.value)
     return t
 
 def t_func_ERROR(t):
     r'error'
-    #print("ERROR: " + t.value)
+    print("ERROR: " + t.value)
     return t
 
 def t_func_END(t):
     r'%%\sEND'
-    #print("END: " + t.value)
+    print("END: " + t.value)
     t.lexer.begin("INITIAL")
     return t
 
 def t_func_STRING(t):
     r'\".*\"'
-    #print("STRING: " + t.value)
+    print("STRING: " + t.value)
     return t
 
 def t_func_PAL(t):
     r'[a-zA-Z0-9\.\(\)]+'
-    #print("PAL: " + t.value)
+    print("PAL: " + t.value)
     return t
 
 def t_func_ER(t): 
     r'[^\s]+'
-    #print("ER: " + t.value)
+    print("FUNC_ER: " + t.value)
     #t.lexer.begin("func")
     return t
 
 def t_er_STRING(t):
     r'\".*\"'
-    #print("STRING: " + t.value)
+    print("STRING: " + t.value)
     return t
 
 def t_er_PYTHON(t):
     r'%%\sPYTHON'
-    #print("PYTHON BEGIN: " + t.value)
+    print("PYTHON BEGIN: " + t.value)
     t.lexer.begin("python")
     return t 
 
 def t_er_EXP(t):
     r'[^\}\"\:]+'
-    #print("EXP: " + t.value)
+    print("EXP: " + t.value)
     return t
 
 def t_python_END(t):
     r'%%'
-    #print("END: " + t.value)
+    print("END: " + t.value)
     t.lexer.begin("INITIAL")
     return t
 
 def t_python_PERC(t):
     r'%'
-    #print("PYTHON PERC: " + t.value)
+    print("PYTHON PERC: " + t.value)
     t.lexer.begin("var")
     return t
 
 def t_python_TEXT(t):
     r'.+'
-    #print("TEXT: " + t.value)
+    print("TEXT: " + t.value)
     return t
 
 t_ignore = " \t\n\r"
@@ -178,5 +178,5 @@ lexer = lex.lex()
 for line in file:
     lexer.input(line)
     for tok in lexer:
-        pass
-"""
+        pass"""
+
