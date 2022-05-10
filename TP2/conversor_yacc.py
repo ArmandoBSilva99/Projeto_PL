@@ -6,55 +6,36 @@ from conversor_lex import literals
 from conversor_lex import states
 
 def p_programa(p):
-    'programa : LEX vars FUNCTIONS' 
-    p[0] = "import ply.lex as lex\n" + p[2] + p[3]
+    'programa : LEX vars FUNCTIONS funcs YACC vars ERS ers PYTHON python vars python END' 
+    p[0] = "import ply.lex as lex\n" + p[2] + p[4] + p[6] + p[8] + p[10] + p[11] + p[12] + p[13]
     parser.output += p[0]
 
 def p_vars_var(p):
-    'vars : vars var'
-    p[0] = p[1] + p[2]
+    'vars : vars comment var comment'
+    p[0] = p[1] + "\n" + p[2] + p[3] + " " + p[4]
     
 def p_vars_empty(p):
     'vars : '
     p[0] = ''
 
 def p_var_string(p):
-    "var : PERC ID '=' STRING comment"
-    p[0] = p[2] + ' = ' + p[4] + " " + p[5] + "\n"
-    #print(p[0])
+    "var : PERC ID '=' STRING" #comment"
+    p[0] = p[2] + ' = ' + p[4] #+ " " + p[5] + "\n"
+    ##print(p[0])
 
 def p_var_lista(p):
-    "var : PERC ID '=' LIST comment"
-    p[0] = p[2] + ' = ' + p[4] + " " + p[5] + "\n"
-    #print(p[0])
+    "var : PERC ID '=' LIST" #comment"
+    p[0] = p[2] + ' = ' + p[4] #+ " " + p[5] + "\n"
+    ##print(p[0])
 
 def p_var_emptylista(p):
-    "var : PERC ID '=' EMPTYLIST comment"
-    p[0] = p[2] + ' = ' + p[4] + " " + p[5] + "\n"
-    #print(p[0])
-
-def p_var_yacc(p):
-    "var : PERC ID '=' YACC comment"
-    p[0] = p[2] + ' = ' + "yacc." + p[4] + " " + p[5] + "\n" 
-    #print(p[0]) 
+    "var : PERC ID '=' EMPTYLIST" #comment"
+    p[0] = p[2] + ' = ' + p[4] #+ " " + p[5] + "\n"
+    ##print(p[0])
 
 #def p_var_empty(p):
 #    "var : "
 #    p[0] = ''    
-"""
-def p_functions_empty(p):
-    'functions : '
-    p[0] = '' 
-
-def p_functions_function(p):
-    'functions : FUNCTIONS'
-    p[0] = p[1] 
-
-def p_functions_funcs(p):
-    'functions : FUNCTIONS funcs'
-    p[0] = p[1] + p[2]
-    ##print(p[0])
-    """
 
 def p_funcs_list(p):
     'funcs : funcs func'
@@ -66,51 +47,55 @@ def p_funcs_empty(p):
     p[0] = ''
 
 def p_func_ret(p):
-    "func : ER RETURN '(' PAL ',' PAL ')'"
-    p[0] = "def " + "t_" + p[4] + "(t):" + "\n" + f"r'{p[1]}'\n" + f"{p[2]} {p[6]}\n"
-    #print(p[0])
+    "func : ER RETURN PAL PAL"
+    p[0] = "def " + "t_" + p[3] + "(t):" + "\n\t" + f"r'{p[1]}'\n\t" + f"{p[2]} {p[4]}\n"
+    ##print(p[0])
 
 def p_func_errorf(p):
-    "func : ERROR '(' PAL STRING ',' PAL ')'"
-    p[0] = "def t_error(t):\n\t" + p[3] + p[4] + "\n\t" + p[6] + "\n" 
-    #print(p[0])
+    "func : PONTO ERROR PAL STRING PAL"
+    p[0] = "def t_error(t):\n\t" + f"#print({p[3]}{p[4]})\n\t" + p[5] + "\n" 
+    ##print(p[0])
 
 def p_func_error(p):
-    "func : ERROR '(' STRING ',' PAL ')'"
-    p[0] = "def t_error(t):\n\t" + p[3] + "\n\t" + p[5] + "\n"  
-    #print(p[0])
+    "func : PONTO ERROR STRING PAL"
+    p[0] = "def t_error(t):\n\t" + f"#print({p[2]})\n\t" + p[3] + "\n"  
+    ##print(p[0])
 
 def p_func_end(p):
     'func : END'
     p[0] = ''     
 
-"""def p_python_perc(p):
-    "python : PERC"
-    p[0] = ''
+def p_python_yacc(p):
+    "python : PERC ID '=' YACC" #comment"
+    p[0] = p[2] + ' = ' + "yacc." + p[4] #+ " " + p[5] + "\n" 
+    ##print(p[0]) 
 
 def p_python_list(p):
-    "python : python TEXT comments"
+    "python : python TEXT"
     p[0] = p[1] + "\n\t" + p[2]
-    #print(p[0])     
+    ##print(p[0])
+
+def p_python_empty(p):
+    "python : "
+    p[0] = ''   
 
 def p_ers_empty(p):
     "ers : "
     p[0] = ''
 
 def p_ers_er(p):
-    "ers : ers er comments"
-    p[0] = p[1] + p[2] + p[3]
-    ##print(p[0])
+    "ers : ers er"
+    p[0] = p[1] + p[2]
+    ###print(p[0])
 
 def p_er_e(p):
-    "er : EXP ':' STRING '{' EXP '}'"
-    p[0] = f"def p_{p[1]}(p):\n\t" + f"\"{p[3]}\n\t{p[5]}\n"
-    #print(p[0])
-"""
+    "er : EXP STRING EXP"
+    p[0] = f"def p_{p[1][:-1]}(p):\n\t" + f"{p[2]}\n\t{p[3]}\n"
+    ##print(p[0])
 
 def p_comment_com(p):
     "comment : COMMENT"
-    p[0] = p[1]
+    p[0] = p[1] + "\n"
 
 def p_comment_empty(p):
     "comment : "
@@ -118,11 +103,11 @@ def p_comment_empty(p):
 
 def p_error(p):
     print(f"Erro sintático! em {p.value}")
-    #print(p)
+    ##print(p)
 
 parser = yacc.yacc()
 parser.output = ""
-f = open('sintaxe2.txt', 'r')
+f = open('sintaxe.txt', 'r')
 
 content = f.read()
 result = parser.parse(content)

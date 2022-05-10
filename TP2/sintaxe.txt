@@ -8,8 +8,7 @@
 \d+(\.\d+)?            return('NUMBER', float(t.value) )
 .                      error(f"Illegal character '{t.value[0]}', [{t.lexer.lineno}]",
                              t.lexer.skip(1) )
-%% END 
-
+                             
 %% YACC
 
 %precedence = [ ('left','+','-'), ('left','*','/'), ('right','UMINUS'), ]

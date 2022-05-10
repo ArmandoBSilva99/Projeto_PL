@@ -2,7 +2,7 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "com"]
+tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "com", "PONTO"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
@@ -83,8 +83,8 @@ def t_func_ERROR(t):
     #print("ERROR: " + t.value)
     return t
 
-def t_func_END(t):
-    r'%%\sEND'
+def t_func_YACC(t):
+    r'%%\sYACC'
     #print("END: " + t.value)
     t.lexer.begin("INITIAL")
     return t
@@ -92,6 +92,10 @@ def t_func_END(t):
 def t_func_STRING(t):
     r'\".*\"'
     #print("STRING: " + t.value)
+    return t
+
+def t_func_PONTO(t):
+    r'\.'
     return t
 
 def t_func_PAL(t):
@@ -164,9 +168,9 @@ def t_error(t):
     t.lexer.skip(1)
 
 lexer = lex.lex()
-"""file = open("sintaxe.txt")
+file = open("sintaxe.txt")
 for line in file:
     lexer.input(line)
     for tok in lexer:
-        pass"""
+        pass
 
