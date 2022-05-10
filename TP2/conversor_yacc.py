@@ -13,30 +13,29 @@ def p_programa(p):
 def p_vars_var(p):
     'vars : vars var'
     p[0] = p[1] + p[2]
-    #parser.output += p[0]
     
 def p_vars_empty(p):
     'vars : '
     p[0] = ''
 
 def p_var_string(p):
-    "var : PERC ID '=' STRING" #COMMENT"
-    p[0] = p[2] + '=' + p[4] + "\t\n" #+ p[5] + "\n"
+    "var : PERC ID '=' STRING comment"
+    p[0] = p[2] + ' = ' + p[4] + " " + p[5] + "\n"
     #print(p[0])
 
 def p_var_lista(p):
-    "var : PERC ID '=' LIST" #COMMENT"
-    p[0] = p[2] + '=' + p[4] + "\t\n" #+ p[5] + "\n"
+    "var : PERC ID '=' LIST comment"
+    p[0] = p[2] + ' = ' + p[4] + " " + p[5] + "\n"
     #print(p[0])
 
 def p_var_emptylista(p):
-    "var : PERC ID '=' EMPTYLIST" #COMMENT"
-    p[0] = p[2] + '=' + p[4] + "\t\n" #+ p[5] + "\n"
+    "var : PERC ID '=' EMPTYLIST comment"
+    p[0] = p[2] + ' = ' + p[4] + " " + p[5] + "\n"
     #print(p[0])
 
 def p_var_yacc(p):
-    "var : PERC ID '=' YACC" #COMMENT"
-    p[0] = p[2] + '=' + "yacc." + p[4] + "\t\n" #+ p[5] + "\n" 
+    "var : PERC ID '=' YACC comment"
+    p[0] = p[2] + ' = ' + "yacc." + p[4] + " " + p[5] + "\n" 
     #print(p[0]) 
 
 #def p_var_empty(p):
@@ -108,7 +107,7 @@ def p_er_e(p):
     p[0] = f"def p_{p[1]}(p):\n\t" + f"\"{p[3]}\n\t{p[5]}\n"
     #print(p[0])
 """
-"""
+
 def p_comment_com(p):
     "comment : COMMENT"
     p[0] = p[1]
@@ -116,7 +115,6 @@ def p_comment_com(p):
 def p_comment_empty(p):
     "comment : "
     p[0] = ''
-    """
 
 def p_error(p):
     print(f"Erro sintático! em {p.value}")

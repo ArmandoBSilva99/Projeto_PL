@@ -2,7 +2,7 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "COMMENT", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "com"]
+tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "com"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
@@ -28,7 +28,7 @@ def t_ERS(t):
     t.lexer.begin("er")
     return t
 
-def t_com(t):
+def t_COMMENT(t):
     r'\#.*'
     #print("COMMENT: " + t.value)
     return t
