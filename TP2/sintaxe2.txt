@@ -1,5 +1,5 @@
 %% LEX
-%literals = "+-/*=()" ## a single char
+%literals = "+-/*=()"
 %ignore = " \t\n"
 %tokens = [ 'VAR','NUMBER' ]
 
