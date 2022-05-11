@@ -2,13 +2,13 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "com", "PONTO"]
+tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "com", "PONTO", "DEF", "VCOMMENT", "SPSTRING"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
 def t_LEX(t):
     r'%%\sLEX'
-    ###print("LEX: " + t.value)
+    ##print("LEX: " + t.value)
     return t
 
 def t_YACC(t):
@@ -50,6 +50,11 @@ def t_var_ID(t):
     #print("ID: " + t.value)
     return t
 
+def t_var_SPSTRING(t):
+    r'\".*\"\s+\#'
+    #print("SPSTRING: " + t.value)
+    return t    
+
 def t_var_STRING(t):
     r'\".*\"'
     #print("STRING: " + t.value)
@@ -62,9 +67,10 @@ def t_var_LIST(t):
     t.lexer.begin("INITIAL")
     return t
 
-def t_var_COMMENT(t):
+def t_var_VCOMMENT(t):
     r'\#.*'
     #print("VAR_COMMENT: " + t.value)
+    t.lexer.begin("INITIAL")
     return t
 
 def t_var_EMPTYLIST(t):
@@ -136,10 +142,14 @@ def t_python_PERC(t):
     t.lexer.begin("var")
     return t
 
+def t_python_DEF(t):
+    r'def.+'
+    return t
+
 def t_python_TEXT(t):
     r'.+'
     #print("TEXT: " + t.value)
-    return t
+    return t    
 
 t_ignore = " \t\n\r"
 t_var_ignore = " \t\n\r"
