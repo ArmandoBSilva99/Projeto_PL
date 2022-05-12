@@ -6,31 +6,46 @@ from conversor_lex import literals
 from conversor_lex import states
 
 def p_programa(p):
-    'programa : LEX vars FUNCTIONS funcs YACC vars ERS ers PYTHON python vars python END' 
-    p[0] = "import ply.lex as lex\n" + p[2] + p[4] + "\nlexer = lex.lex()\n\nimport ply.yacc as yacc\n" + p[6] + p[8] + p[10] + p[11] + p[12]
+    'programa : lex yacc'
+    p[0] = p[1] + p[2] 
     parser.output += p[0]
 
+def p_lex_simple(p):
+    'lex : LEX vars FUNCTIONS funcs'
+    p[0] = "import ply.lex as lex\n\n" + p[2] + "\n" + p[4] + "lexer = lex.lex()\n\n\n"
+
+def p_lex_empty(p):
+    'lex : '
+    p[0] = ''     
+
+def p_yacc_empty(p):
+    'yacc : '
+    p[0] = ''
+
+def p_yacc_simple(p):
+    'yacc : YACC vars ERS ers PYTHON python vars python END'
+    p[0] = "import ply.yacc as yacc\n\n" + p[2] + "\n" + p[4] + p[6] + p[7] + p[8]  
+
 def p_vars_var(p):
-    'vars : vars comment var'
-    p[0] = p[1] + p[2] + p[3] + "\n"
+    'vars : vars comment var vcomment'
+    p[0] = p[1] + p[2] + p[3] + " " + p[4]
     
 def p_vars_empty(p):
     'vars : '
     p[0] = ''
-
-def p_var_spstring(p):
-    "var : PERC ID '=' SPSTRING VCOMMENT"
-    p[0] = p[2] + ' = ' + p[4] + p[5]
-    ##print(p[0])
 
 def p_var_string(p):
     "var : PERC ID '=' STRING"
     p[0] = p[2] + ' = ' + p[4]
     ##print(p[0])
 
+def p_var_yacc(p):
+    "var : PERC ID '=' YACC" #comment"
+    p[0] = p[2] + ' = ' + "yacc." + p[4] + "\n"
+
 def p_var_lista(p):
-    "var : PERC ID '=' LIST" #comment"
-    p[0] = p[2] + ' = ' + p[4] #+ " " + p[5] + "\n"
+    "var : PERC ID '=' LIST"# comment"
+    p[0] = p[2] + ' = ' + p[4]# + " " + p[5] + "\n"
     ##print(p[0])
 
 def p_var_emptylista(p):
@@ -38,15 +53,11 @@ def p_var_emptylista(p):
     p[0] = p[2] + ' = ' + p[4] #+ " " + p[5] + "\n"
     ##print(p[0])
 
-#def p_var_empty(p):
-#    "var : "
-#    p[0] = ''    
-
 
 # SÓ PODE EXISTIR COMENTÁRIO ANTES... SE QUISERES PODEMOS ALTERAR
 def p_funcs_list(p):
     'funcs : funcs comment func'
-    p[0] = p[1] + p[2] + p[3]
+    p[0] = p[1] + p[2] + p[3] + "\n"
     #parser.output += p[0]  
 
 def p_funcs_empty(p):
@@ -72,10 +83,6 @@ def p_func_end(p):
     'func : END'
     p[0] = '' 
 
-def p_python_yacc(p):
-    "python : PERC ID '=' YACC" #comment"
-    p[0] = p[2] + ' = ' + "yacc." + p[4] + "\n"
-
 def p_texto_list(p):
     "texto : texto TEXT"
     p[0] = p[1] + "\t" + p[2] + "\n"
@@ -91,11 +98,11 @@ def p_python_deflist(p):
 
 def p_python_list(p):
     "python : python TEXT"
-    p[0] = p[1] + p[2] + "\n"
+    p[0] = p[1] + p[2] + "\n"    
 
 def p_python_empty(p):
     "python : "
-    p[0] = "\n" 
+    p[0] = ''
 
 def p_ers_empty(p):
     "ers : "
@@ -104,7 +111,7 @@ def p_ers_empty(p):
 # IGUAL AO FUNC
 def p_ers_er(p):
     "ers : ers comment er"
-    p[0] = p[1] + p[2] + p[3]
+    p[0] = p[1] + p[2] + p[3] + "\n"
     ###print(p[0])
 
 def p_er_e(p):
@@ -112,13 +119,21 @@ def p_er_e(p):
     p[0] = f"def p_{p[1][:-1]}(p):\n\t" + f"{p[2]}\n\t{p[3]}\n"
     ##print(p[0])
 
+def p_vcomment_com(p):
+    "vcomment : VCOMMENT"
+    p[0] = p[1] + "\n"
+
+def p_vcomment_empty(p):
+    "vcomment : "
+    p[0] = "\n"  
+
 def p_comment_com(p):
     "comment : COMMENT"
     p[0] = p[1] + "\n"
 
 def p_comment_empty(p):
     "comment : "
-    p[0] = "\n"
+    p[0] = '' 
 
 def p_error(p):
     print(f"Erro sintático! em {p.value}")

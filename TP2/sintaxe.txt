@@ -11,7 +11,7 @@
                              
 %% YACC
 
-%precedence = [ ('left','+','-'), ('left','*','/'), ('right','UMINUS'), ]
+%precedence = [ ('left','+','-'), ('left','*','/'), ('right','UMINUS'), ] 
 
 # symboltable : dictionary of variables
 %ts = {}

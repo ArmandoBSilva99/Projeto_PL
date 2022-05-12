@@ -2,7 +2,7 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "com", "PONTO", "DEF", "VCOMMENT", "SPSTRING"]
+tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "PONTO", "DEF", "VCOMMENT"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
@@ -28,6 +28,11 @@ def t_ERS(t):
     t.lexer.begin("er")
     return t
 
+def t_VCOMMENT(t):
+    r'\#{2}.*'
+    #print("VAR_COMMENT: " + t.value)
+    return t
+
 def t_COMMENT(t):
     r'\#.*'
     #print("COMMENT: " + t.value)
@@ -48,11 +53,6 @@ def t_var_YACC(t):
 def t_var_ID(t):
     r'[a-zA-Z_][a-zA-Z0-9_]*'
     #print("ID: " + t.value)
-    return t
-
-def t_var_SPSTRING(t):
-    r'\".*\"\s+\#'
-    #print("SPSTRING: " + t.value)
     return t    
 
 def t_var_STRING(t):
@@ -60,16 +60,10 @@ def t_var_STRING(t):
     #print("STRING: " + t.value)
     t.lexer.begin("INITIAL")
     return t
-
+    
 def t_var_LIST(t):
     r'\[.*\]'
     #print("LIST: " + t.value)
-    t.lexer.begin("INITIAL")
-    return t
-
-def t_var_VCOMMENT(t):
-    r'\#.*'
-    #print("VAR_COMMENT: " + t.value)
     t.lexer.begin("INITIAL")
     return t
 
