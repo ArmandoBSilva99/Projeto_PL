@@ -66,7 +66,7 @@ def p_funcs_empty(p):
 
 def p_func_ret(p):
     "func : ER RETURN PAL PAL"
-    p[0] = "def " + "t_" + p[3] + "(t):" + "\n\t" + f"r'{p[1]}'\n\t" + f"{p[2]} {p[4]}\n"
+    p[0] = "def " + "t_" + p[3] + "(t):" + "\n\t" + f"r'{p[1]}'\n\t" + f"t.value = {p[4]}\n\t" + f"{p[2]} t\n"
     ##print(p[0])
 
 def p_func_errorf(p):
@@ -76,7 +76,7 @@ def p_func_errorf(p):
 
 def p_func_error(p):
     "func : PONTO ERROR STRING PAL"
-    p[0] = "def t_error(t):\n\t" + f"#print({p[2]})\n\t" + p[3] + "\n"  
+    p[0] = "def t_error(t):\n\t" + f"print({p[2]})\n\t" + p[3] + "\n"  
     ##print(p[0])
 
 def p_func_end(p):
@@ -116,7 +116,15 @@ def p_ers_er(p):
 
 def p_er_e(p):
     "er : EXP STRING EXP"
-    p[0] = f"def p_{p[1][:-1]}(p):\n\t" + f"{p[2]}\n\t{p[3]}\n"
+    var = p[1][:-1]
+    if var in p.parser.erfunc:
+        p.parser.erfunc[var] += 1
+        p[1] = var + f'_{p.parser.erfunc[var]}'
+    else:
+        p.parser.erfunc[var] = 1
+        p[1] = var + f'_{p.parser.erfunc[var]}'
+
+    p[0] = f"def p_{p[1]}(t):\n\t" + f"\"{var} : {p[2][1:]}\n\t{p[3]}\n"
     ##print(p[0])
 
 def p_vcomment_com(p):
@@ -139,12 +147,18 @@ def p_error(p):
     print(f"Erro sintático! em {p.value}")
     ##print(p)
 
+
 parser = yacc.yacc()
 parser.output = ""
+parser.erfunc = {}
+
 f = open('sintaxe.txt', 'r')
 
 content = f.read()
 result = parser.parse(content)
-print(parser.output)
+
+output = open('output.py', 'w')
+output.write(parser.output)
 
 f.close()
+output.close()
