@@ -2,7 +2,7 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "PONTO", "DEF", "VCOMMENT", "NUM", "REGEX"]
+tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "PONTO", "VCOMMENT", "NUM", "REGEX"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
@@ -43,6 +43,11 @@ def t_COMMENT(t):
     r'\#.*'
     #print("COMMENT: " + t.value)
     return t
+
+def t_func_COMMENT(t):
+    r'\#.*'
+    #print("FUNC_COMMENT: " + t.value)
+    return t    
 
 def t_PERC(t):
     r'%'
@@ -152,10 +157,6 @@ def t_python_PERC(t):
     r'%'
     #print("PYTHON PERC: " + t.value)
     t.lexer.begin("var")
-    return t
-
-def t_python_DEF(t):
-    r'def.+'
     return t
 
 def t_python_TEXT(t):

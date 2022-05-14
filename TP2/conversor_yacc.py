@@ -24,7 +24,7 @@ def p_yacc_empty(p):
 
 def p_yacc_simple(p):
     'yacc : YACC vars ERS ers PYTHON python vars PYTHON python END'
-    p[0] = "import ply.yacc as yacc\n\n" + p[2] + "\n" + p[4] + p[6] + p[7] + p[9]  
+    p[0] = "import ply.yacc as yacc\n\n" + p[2] + "\n" + p[4] + p[6] + p[7] + "\n" + p[9]  
 
 def p_vars_var(p):
     'vars : vars comment var vcomment'
@@ -96,11 +96,6 @@ def p_func_end(p):
     'func : END'
     p[0] = '' 
 
-def p_python_deflist(p):
-    "python : python DEF TEXT"
-    p[0] = p[1] + "\n" + p[2] + "\n" + p[3] + "\n"
-    #print(p[0])     
-
 def p_python_list(p):
     "python : python TEXT"
     p[0] = p[1] + p[2] + "\n"    
@@ -157,18 +152,16 @@ parser = yacc.yacc()
 parser.output = ""
 parser.erfunc = {}
 
-def main():
-    if len(sys.argv) == 1: file = "sintaxe.txt"
-    elif len(sys.argv) > 2: 
-        raise NameError("Argumentos a mais na funcao principal\n")
-    else: file = sys.argv[1]
 
-    f = open(file)
-    content = f.read()
-    result = parser.parse(content)
-    f.close()
-    f = open(file[:-4] + ".py", 'w')
-    f.write(parser.output)
-    f.close()
+if len(sys.argv) == 1: file = "sintaxe.txt"
+elif len(sys.argv) > 2: 
+    raise NameError("Argumentos a mais na funcao principal\n")
+else: file = sys.argv[1]
 
-main()
+f = open(file)
+content = f.read()
+result = parser.parse(content)
+f.close()
+f = open(file[:-4] + ".py", 'w')
+f.write(parser.output)
+f.close()
