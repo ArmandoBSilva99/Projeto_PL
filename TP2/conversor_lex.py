@@ -2,7 +2,7 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "PONTO", "DEF", "VCOMMENT", "NUM"]
+tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "PONTO", "DEF", "VCOMMENT", "NUM", "REGEX"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
@@ -50,6 +50,12 @@ def t_PERC(t):
     #print("PERC: " + t.value)
     return t
 
+def t_var_REGEX(t):
+    r'r\'.*\''
+    t.lexer.begin("INITIAL")
+    #print("REGEX: " + t.value)
+    return t   
+
 def t_var_NUM(t):
     r'[0-9]+'
     #print("NUM: " + t.value)
@@ -83,7 +89,7 @@ def t_var_EMPTYLIST(t):
     r'\{\}'
     #print("EMPTYLIST: " + t.value)
     t.lexer.begin("INITIAL")
-    return t  
+    return t   
   
 def t_func_RETURN(t):
     r'return'
@@ -161,7 +167,7 @@ t_ignore = " \t\n\r"
 t_var_ignore = " \t\n\r"
 t_func_ignore = " \t\n\r,'()"
 t_er_ignore = " \t\n\r}{:"
-t_python_ignore = " \t\n\r"
+t_python_ignore = "\n\t\r"
 
 def t_var_error(t):
     print("Illegal character: ", t.value[0])

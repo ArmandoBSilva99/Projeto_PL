@@ -1,11 +1,11 @@
 %% LEX
 %tokens = ["NUM", "PAL"] ##tokens 
-%literals = "[]," ##literals
+%literals = ["[" , "]" , ","] ##literals
 %ignore = " \n\t\r"
+%NUM = r'\d+'
+%PAL = r'[a-zA-Z]+'
 
 %% FUNCTIONS
-\d+             return('NUM', t.value )
-[a-zA-Z]+       return('PAL', t.value )
 .               error(f"Illegal character {t.value[0]}", t.lexer.skip(1) )
 
 %% YACC

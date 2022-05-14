@@ -39,14 +39,22 @@ def p_var_number(p):
     p[0] = p[2] + ' = ' + p[4]
     ##print(p[0])    
 
+def p_var_regex(p):
+    "var : PERC ID '=' REGEX"
+    p[0] = f"t_{p[2]}" + ' = ' + p[4]
+    ##print(p[0])  
+
 def p_var_string(p):
     "var : PERC ID '=' STRING"
-    p[0] = p[2] + ' = ' + p[4]
+    if p[2] == "ignore":
+        p[0] = f"t_{p[2]}" + ' = ' + p[4]
+    else : 
+        p[0] = p[2] + ' = ' + p[4]    
     ##print(p[0])
 
 def p_var_yacc(p):
     "var : PERC ID '=' YACC" #comment"
-    p[0] = p[2] + ' = ' + "yacc." + p[4] + "\n"
+    p[0] = "\n" + p[2] + ' = ' + "yacc." + p[4] + "\n"
 
 def p_var_lista(p):
     "var : PERC ID '=' LIST"# comment"
@@ -88,17 +96,9 @@ def p_func_end(p):
     'func : END'
     p[0] = '' 
 
-def p_texto_list(p):
-    "texto : texto TEXT"
-    p[0] = p[1] + "\t" + p[2] + "\n"
-
-def p_texto_empty(p):
-    "texto : "
-    p[0] = ''
-
 def p_python_deflist(p):
-    "python : python DEF texto"
-    p[0] = p[1] + p[2] + "\n" + p[3] + "\n"
+    "python : python DEF TEXT"
+    p[0] = p[1] + "\n" + p[2] + "\n" + p[3] + "\n"
     #print(p[0])     
 
 def p_python_list(p):
