@@ -23,8 +23,8 @@ def p_yacc_empty(p):
     p[0] = ''
 
 def p_yacc_simple(p):
-    'yacc : YACC vars ERS ers PYTHON python vars python END'
-    p[0] = "import ply.yacc as yacc\n\n" + p[2] + "\n" + p[4] + p[6] + p[7] + p[8]  
+    'yacc : YACC vars ERS ers PYTHON python vars PYTHON python END'
+    p[0] = "import ply.yacc as yacc\n\n" + p[2] + "\n" + p[4] + p[6] + p[7] + p[9]  
 
 def p_vars_var(p):
     'vars : vars comment var vcomment'
@@ -33,6 +33,11 @@ def p_vars_var(p):
 def p_vars_empty(p):
     'vars : '
     p[0] = ''
+
+def p_var_number(p):
+    "var : PERC ID '=' NUM"
+    p[0] = p[2] + ' = ' + p[4]
+    ##print(p[0])    
 
 def p_var_string(p):
     "var : PERC ID '=' STRING"
@@ -152,13 +157,18 @@ parser = yacc.yacc()
 parser.output = ""
 parser.erfunc = {}
 
-f = open('sintaxe.txt', 'r')
+def main():
+    if len(sys.argv) == 1: file = "sintaxe.txt"
+    elif len(sys.argv) > 2: 
+        raise NameError("Argumentos a mais na funcao principal\n")
+    else: file = sys.argv[1]
 
-content = f.read()
-result = parser.parse(content)
+    f = open(file)
+    content = f.read()
+    result = parser.parse(content)
+    f.close()
+    f = open(file[:-4] + ".py", 'w')
+    f.write(parser.output)
+    f.close()
 
-output = open('output.py', 'w')
-output.write(parser.output)
-
-f.close()
-output.close()
+main()

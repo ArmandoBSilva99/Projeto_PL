@@ -38,6 +38,9 @@ def getval(n):
     return ts.get(n,0)
 
 %y=yacc()
+
+%% PYTHON
+
 y.parse("3+4*7")
 
 %%

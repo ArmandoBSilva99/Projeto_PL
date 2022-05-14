@@ -2,7 +2,7 @@ import re
 import ply.lex as lex
 from urllib3 import Retry
 
-tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "PONTO", "DEF", "VCOMMENT"]
+tokens = ['LEX', 'YACC', 'FUNCTIONS', 'ERS', "COMMENT", 'ID', 'STRING', 'PERC', "ER", "RETURN", "PAL", "ERROR", "LIST", "END", "EMPTYLIST", "EXP", "TEXT", "PYTHON", "PONTO", "DEF", "VCOMMENT", "NUM"]
 literals = ['=', '(', ')', '[', ']', ',']
 states = [("var", "exclusive"), ("func", "exclusive"), ("er", "exclusive"), ("python", "exclusive")]
 
@@ -15,6 +15,12 @@ def t_YACC(t):
     r'%%\sYACC'
     #print("YACC: " + t.value)
     return t
+
+def t_PYTHON(t):
+    r'%%\sPYTHON'
+    #print("PYTHON BEGIN: " + t.value)
+    t.lexer.begin("python")
+    return t 
 
 def t_FUNCTIONS(t):
     r'%%\sFUNCTIONS'
@@ -44,16 +50,22 @@ def t_PERC(t):
     #print("PERC: " + t.value)
     return t
 
+def t_var_NUM(t):
+    r'[0-9]+'
+    #print("NUM: " + t.value)
+    t.lexer.begin("INITIAL")
+    return t  
+
 def t_var_YACC(t):
     r'yacc\(\)'
     #print("YACC: " + t.value)
-    t.lexer.begin("python")
+    t.lexer.begin("INITIAL")
     return t      
 
 def t_var_ID(t):
-    r'[a-zA-Z_][a-zA-Z0-9_]*'
+    r'[a-zA-Z_][a-zA-Z0-9_\.]*'
     #print("ID: " + t.value)
-    return t    
+    return t        
 
 def t_var_STRING(t):
     r'\".*\"'
@@ -71,7 +83,7 @@ def t_var_EMPTYLIST(t):
     r'\{\}'
     #print("EMPTYLIST: " + t.value)
     t.lexer.begin("INITIAL")
-    return t
+    return t  
   
 def t_func_RETURN(t):
     r'return'
@@ -172,7 +184,7 @@ def t_error(t):
     t.lexer.skip(1)
 
 lexer = lex.lex()
-file = open("sintaxe.txt")
+file = open("test_1.txt")
 for line in file:
     lexer.input(line)
     for tok in lexer:
