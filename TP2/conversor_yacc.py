@@ -10,19 +10,11 @@ def p_programa(p):
     p[0] = p[1] + p[2] 
     parser.output += p[0]
 
-def p_lex_simple(p):
+def p_lex(p):
     'lex : LEX vars FUNCTIONS funcs'
     p[0] = "import ply.lex as lex\n\n" + p[2] + "\n" + p[4] + "lexer = lex.lex()\n\n\n"
-
-def p_lex_empty(p):
-    'lex : '
-    p[0] = ''     
-
-def p_yacc_empty(p):
-    'yacc : '
-    p[0] = ''
-
-def p_yacc_simple(p):
+ 
+def p_yacc(p):
     'yacc : YACC vars ERS ers PYTHON python vars PYTHON python END'
     p[0] = "import ply.yacc as yacc\n\n" + p[2] + "\n" + p[4] + p[6] + p[7] + "\n" + p[9]  
 
@@ -37,12 +29,10 @@ def p_vars_empty(p):
 def p_var_number(p):
     "var : PERC ID '=' NUM"
     p[0] = p[2] + ' = ' + p[4]
-    ##print(p[0])    
 
 def p_var_regex(p):
     "var : PERC ID '=' REGEX"
     p[0] = f"t_{p[2]}" + ' = ' + p[4]
-    ##print(p[0])  
 
 def p_var_string(p):
     "var : PERC ID '=' STRING"
@@ -50,28 +40,22 @@ def p_var_string(p):
         p[0] = f"t_{p[2]}" + ' = ' + p[4]
     else : 
         p[0] = p[2] + ' = ' + p[4]    
-    ##print(p[0])
 
 def p_var_yacc(p):
-    "var : PERC ID '=' YACC" #comment"
+    "var : PERC ID '=' YACC"
     p[0] = "\n" + p[2] + ' = ' + "yacc." + p[4] + "\n"
 
 def p_var_lista(p):
-    "var : PERC ID '=' LIST"# comment"
-    p[0] = p[2] + ' = ' + p[4]# + " " + p[5] + "\n"
-    ##print(p[0])
+    "var : PERC ID '=' LIST"
+    p[0] = p[2] + ' = ' + p[4]
 
 def p_var_emptylista(p):
-    "var : PERC ID '=' EMPTYLIST" #comment"
-    p[0] = p[2] + ' = ' + p[4] #+ " " + p[5] + "\n"
-    ##print(p[0])
+    "var : PERC ID '=' EMPTYLIST"
+    p[0] = p[2] + ' = ' + p[4] 
 
-
-# SÓ PODE EXISTIR COMENTÁRIO ANTES... SE QUISERES PODEMOS ALTERAR
 def p_funcs_list(p):
     'funcs : funcs comment func'
     p[0] = p[1] + p[2] + p[3] + "\n"
-    #parser.output += p[0]  
 
 def p_funcs_empty(p):
     'funcs : '
@@ -80,17 +64,14 @@ def p_funcs_empty(p):
 def p_func_ret(p):
     "func : ER RETURN PAL PAL"
     p[0] = "def " + "t_" + p[3] + "(t):" + "\n\t" + f"r'{p[1]}'\n\t" + f"t.value = {p[4]}\n\t" + f"{p[2]} t\n"
-    ##print(p[0])
 
 def p_func_errorf(p):
     "func : PONTO ERROR PAL STRING PAL"
     p[0] = "def t_error(t):\n\t" + f"print({p[3]}{p[4]})\n\t" + p[5] + "\n" 
-    ##print(p[0])
 
 def p_func_error(p):
     "func : PONTO ERROR STRING PAL"
     p[0] = "def t_error(t):\n\t" + f"print({p[2]})\n\t" + p[3] + "\n"  
-    ##print(p[0])
 
 def p_func_end(p):
     'func : END'
@@ -112,7 +93,7 @@ def p_ers_list(p):
     "ers : ers comment er"
     p[0] = p[1] + p[2] + p[3] + "\n"
 
-def p_er_e(p):
+def p_er(p):
     "er : EXP STRING EXP"
     var = p[1][:-1]
     if var in p.parser.erfunc:
@@ -123,7 +104,6 @@ def p_er_e(p):
         p[1] = var + f'_{p.parser.erfunc[var]}'
 
     p[0] = f"def p_{p[1]}(t):\n\t" + f"\"{var} : {p[2][1:]}\n\t{p[3]}\n"
-    ##print(p[0])
 
 def p_vcomment_com(p):
     "vcomment : VCOMMENT"
@@ -143,23 +123,24 @@ def p_comment_empty(p):
 
 def p_error(p):
     print(f"Erro sintático! em {p.value}")
-    ##print(p)
 
 
 parser = yacc.yacc()
 parser.output = ""
 parser.erfunc = {}
 
+def main():
+    if len(sys.argv) == 1: file = "sintaxe.txt"
+    elif len(sys.argv) > 2: 
+        raise NameError("Argumentos a mais na funcao principal\n")
+    else: file = sys.argv[1]
 
-if len(sys.argv) == 1: file = "sintaxe.txt"
-elif len(sys.argv) > 2: 
-    raise NameError("Argumentos a mais na funcao principal\n")
-else: file = sys.argv[1]
+    f = open(file)
+    content = f.read()
+    result = parser.parse(content)
+    f.close()
+    f = open(file[:-4] + ".py", 'w')
+    f.write(parser.output)
+    f.close()
 
-f = open(file)
-content = f.read()
-result = parser.parse(content)
-f.close()
-f = open(file[:-4] + ".py", 'w')
-f.write(parser.output)
-f.close()
+main()    
