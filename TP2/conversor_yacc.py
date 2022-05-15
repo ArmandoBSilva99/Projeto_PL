@@ -108,11 +108,9 @@ def p_ers_empty(p):
     "ers : "
     p[0] = ''
 
-# IGUAL AO FUNC
-def p_ers_er(p):
+def p_ers_list(p):
     "ers : ers comment er"
     p[0] = p[1] + p[2] + p[3] + "\n"
-    ###print(p[0])
 
 def p_er_e(p):
     "er : EXP STRING EXP"

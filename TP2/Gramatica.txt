@@ -1,35 +1,40 @@
-P0 : Programa -> Vars Funcs Ers Python
+P0  : Programa -> lex yacc
 
-P1 : Vars -> 
-P2 :       | Var Comments Vars
+P1  : lex -> 
+P2  :      | LEX vars FUNCTIONS funcs
 
-P4 : Funcs ->
-P5 :       | Funcs Func
+P3  : yacc -> 
+P4  :       | YACC vars ERS ers PYTHON python vars PYTHON python END
 
-P6 : Python -> PERC
-P7 :         | Python TEXT
-P8 :         | END
+P5  : vars -> 
+P6  :       | vars comment var vcomment
 
-P9 : Comments ->
-               | COMMENT Comments
+P7  : var -> PERC ID '=' STRING
+P8  :      | PERC ID '=' LIST 
+P9  :      | PERC ID '=' EMPTYLIST 
+P10 :      | PERC ID '=' YACC
+P11 :      | PERC ID '=' NUM
+P12 :      | PERC ID '=' REGEX
 
-P6 : Var -> PERC ID '=' STRING
-P7 :      | PERC ID '=' LIST 
-          | PERC ID '=' EMPTYLIST 
-          | PERC ID '=' YACC
+P13 : funcs -> 
+P14 :        | funcs comment func
 
-P8 : Func -> ER RETURN '(' PAL ',' PAL ')'
-            | ERROR '(' PAL STRING ',' PAL ')'
-            | ERROR '(' STRING ',' PAL ')'
-            | END
+P16 : func -> ER RETURN PAL PAL
+P17 :       | PONTO ERROR PAL STRING PAL
+P18 :       | PONTO ERROR STRING PAL
+P19 :       | END
 
-P12 : Lista -> '[' Elementos ']'
-P13:         |
+P20 : python -> 
+P21 :         | python TEXT
 
-P14 : Elementos -> TOK
-P15 :            | TOK ',' Elementos
+P22 : ers -> 
+P23 :      | ers comment er
 
-P16: Ers -> 
-          | Ers Er 
+P24 : er -> EXP STRING EXP
 
-P16 : Er -> EXP ':' STRING '{' EXP '}'
+P25 : vcomments ->
+P26 :            | VCOMMENT
+
+P27 : comments ->
+P28 :           | COMMENT
+
